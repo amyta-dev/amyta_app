@@ -1,0 +1,63 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data" novalidate>
+  {% csrf_token %}
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card card-primary card-outline">
+        <div class="card-header"><h3 class="card-title"><i class="fas fa-calculator mr-2"></i>Program Review Perpajakan</h3></div>
+        <div class="card-body">
+          <p class="text-muted">Workflow stateless: input diproses untuk menghasilkan kertas kerja Excel dan tidak menyimpan attachment review ke database.</p>
+
+          <h5 class="mt-3 mb-3">1. Data PT & Periode Review</h5>
+          <div class="row">
+            <div class="col-md-8 form-group"><label>{{ form.nama_pt.label }}</label>{{ form.nama_pt }}{% for e in form.nama_pt.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+            <div class="col-md-4 form-group"><label>{{ form.singkatan_pt.label }}</label>{{ form.singkatan_pt }}{% for e in form.singkatan_pt.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+            <div class="col-md-6 form-group"><label>{{ form.periode_fy.label }}</label>{{ form.periode_fy }}<small class="text-muted">{{ form.periode_fy.help_text }}</small></div>
+            <div class="col-md-6 form-group"><label>{{ form.periode_ptd.label }}</label>{{ form.periode_ptd }}<small class="text-muted">{{ form.periode_ptd.help_text }}</small></div>
+          </div>
+
+          <hr><h5 class="mb-3">2. Parameter Pajak</h5>
+          <div class="row">
+            <div class="col-md-3 form-group"><label>{{ form.tarif_wht23.label }}</label>{{ form.tarif_wht23 }}</div>
+            <div class="col-md-3 form-group"><label>{{ form.tarif_wht4_2.label }}</label>{{ form.tarif_wht4_2 }}</div>
+            <div class="col-md-3 form-group"><label>{{ form.tarif_wht21.label }}</label>{{ form.tarif_wht21 }}</div>
+            <div class="col-md-3 form-group"><label>{{ form.tarif_ppn.label }}</label>{{ form.tarif_ppn }}</div>
+            <div class="col-md-4 form-group"><label>{{ form.sanksi_bunga_persen.label }}</label>{{ form.sanksi_bunga_persen }}</div>
+            <div class="col-md-4 form-group"><label>{{ form.sanksi_bunga_bulan.label }}</label>{{ form.sanksi_bunga_bulan }}</div>
+            <div class="col-md-4 form-group"><label>{{ form.sanksi_admin_ppn.label }}</label>{{ form.sanksi_admin_ppn }}</div>
+          </div>
+
+          <hr><h5 class="mb-3">3. Upload SPT (PDF)</h5>
+          {% for field in form %}
+            {% if field.name == 'spt_pph21_2024' or field.name == 'spt_pph21_2025' or field.name == 'spt_ppn_2024' or field.name == 'spt_ppn_2025' or field.name == 'spt_unifikasi' %}
+            <div class="form-group"><label>{{ field.label }}</label>{{ field }}{% for e in field.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+            {% endif %}
+          {% endfor %}
+
+          <hr><h5 class="mb-3">4. Laporan Keuangan & Mapping Keyword</h5>
+          <div class="form-group"><label>{{ form.laporan_keuangan.label }}</label>{{ form.laporan_keuangan }}{% for e in form.laporan_keuangan.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+          <div class="form-group"><label>{{ form.mapping_keyword.label }}</label>{{ form.mapping_keyword }}{% for e in form.mapping_keyword.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-primary" type="submit"><i class="fas fa-cogs mr-1"></i> Proses & Unduh Kertas Kerja</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card"><div class="card-header"><h3 class="card-title">Output</h3></div><div class="card-body small">
+        <strong>Rekap SPT</strong><br>
+        PPh 21 versi lama & baru, PPN versi lama & baru, PPh Unifikasi.<br><br>
+        <strong>Kertas Kerja LK</strong><br>
+        Satu sheet per tahun dengan Objek PPh 23, PPh 4(2), PPh 21, PPN, dan Koreksi PPh Badan.<br><br>
+        <strong>Rekonsiliasi</strong><br>
+        WHT 23, WHT 4(2), WHT 21, dan PPN.
+      </div></div>
+      <div class="alert alert-info small"><i class="fas fa-info-circle mr-1"></i> Jika format teks PDF DJP berbeda dari pola yang dikenali, output rekap memberi catatan <em>Perlu review manual</em> alih-alih mengisi angka palsu.</div>
+    </div>
+  </div>
+</form>
+{% endblock %}

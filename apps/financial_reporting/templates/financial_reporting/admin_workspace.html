@@ -1,0 +1,92 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block content %}
+<div class="container-fluid px-0">
+  <div class="row">
+    <div class="col-12 col-xl-10">
+      <div class="card card-primary card-outline">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fas fa-file-invoice-dollar mr-2"></i>{{ title }}</h3>
+        </div>
+        <form method="post" enctype="multipart/form-data" novalidate>
+          {% csrf_token %}
+          <div class="card-body">
+            <p class="text-muted mb-4">{{ subtitle }} File diproses sementara dan tidak disimpan permanen.</p>
+
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <h5 class="mb-3">1. Identitas & Periode</h5>
+            <div class="row">
+              {% for field in form %}
+                {% if field.name == 'client_name' or field.name == 'period_start' or field.name == 'period_end' %}
+                <div class="col-md-4 form-group">
+                  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                  {{ field }}
+                  {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            <hr>
+            <h5 class="mb-3">2. Delapan Workbook Wajib</h5>
+            <div class="row">
+              {% for field in form %}
+                {% if field.name == 'cash_flow_master' or field.name == 'coa_master' or field.name == 'beginning_trial_balance' or field.name == 'journal_voucher' or field.name == 'beginning_ar' or field.name == 'beginning_ap' or field.name == 'beginning_advance' or field.name == 'beginning_cash_flow' %}
+                <div class="col-md-6 form-group">
+                  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                  {{ field }}
+                  {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            <hr>
+            <h5 class="mb-3">3. Opsi Lanjutan</h5>
+            <div class="row">
+              {% for field in form %}
+                {% if field.name == 'ar_account_codes' or field.name == 'ap_account_codes' or field.name == 'advance_account_codes' %}
+                <div class="col-md-4 form-group">
+                  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                  {{ field }}
+                  {% if field.help_text %}<small class="form-text text-muted">{{ field.help_text }}</small>{% endif %}
+                  {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <div class="form-group form-check mt-2">
+              {{ form.strict_validation }}
+              <label class="form-check-label" for="{{ form.strict_validation.id_for_label }}">{{ form.strict_validation.label }}</label>
+              <small class="form-text text-muted">{{ form.strict_validation.help_text }}</small>
+            </div>
+
+            <div class="alert alert-info mt-4 mb-0">
+              <strong>Output:</strong> Trial Balance, Income Statement, Balance Sheet, Cash Flow Statement, AR Report, AP Report, Advance Payment Report, Validation Summary, workbook gabungan, dan processing manifest.
+            </div>
+          </div>
+          <div class="card-footer">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-cogs mr-1"></i> Generate & Download ZIP
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  #content-main input[type="text"], #content-main input[type="date"], #content-main input[type="file"] {
+    display: block; width: 100%; min-height: 38px; padding: .375rem .75rem;
+    border: 1px solid #ced4da; border-radius: .25rem; background: #fff;
+  }
+</style>
+{% endblock %}

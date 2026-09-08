@@ -1,0 +1,39 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card card-primary card-outline">
+      <div class="card-header"><h3 class="card-title"><i class="fas fa-file-excel mr-2"></i>Generate Depreciation Schedule</h3></div>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card-body">
+          <p class="text-muted">Engine tetap stateless: upload diproses in-memory lalu hasil Excel langsung di-download.</p>
+          {% for field in form %}
+          <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<small class="form-text text-muted">{{ field.help_text }}</small>{% endif %}
+            {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-primary" type="submit"><i class="fas fa-cogs mr-1"></i> Generate Excel Report</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">Required Columns</h3></div>
+      <div class="card-body small">
+        <code>No</code>, <code>Description</code>, <code>Account Code</code>, <code>Unit</code>,
+        <code>Purchase Date</code>, <code>Useful Life (in months)</code>, <code>Asset Amount</code>,
+        dan <code>Depreciation Method</code>.
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

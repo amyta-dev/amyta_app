@@ -1,0 +1,58 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card card-primary card-outline">
+      <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-file-pdf mr-2"></i>Bank Statement PDF Parsing</h3>
+      </div>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card-body">
+          <p class="text-muted">
+            Upload e-statement PDF asli. Sistem membaca transaksi dan menghasilkan Excel dengan sheet
+            <strong>Transactions</strong> dan <strong>Summary</strong>.
+          </p>
+
+          <div class="form-group">
+            <label for="{{ form.bank.id_for_label }}">{{ form.bank.label }}</label>
+            {{ form.bank }}
+            {% for error in form.bank.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+          </div>
+
+          <div class="form-group">
+            <label for="{{ form.pdf_file.id_for_label }}">{{ form.pdf_file.label }}</label>
+            {{ form.pdf_file }}
+            {% if form.pdf_file.help_text %}<small class="form-text text-muted">{{ form.pdf_file.help_text }}</small>{% endif %}
+            {% for error in form.pdf_file.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+          </div>
+        </div>
+        <div class="card-footer">
+          <button class="btn btn-primary" type="submit">
+            <i class="fas fa-file-excel mr-1"></i> Convert ke Excel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">Bank yang Didukung</h3></div>
+      <div class="card-body small">
+        <ul class="mb-0 pl-3">
+          <li>Bank Central Asia (BCA)</li>
+          <li>Bank Negara Indonesia (BNI)</li>
+          <li>Bank of China (BOC)</li>
+          <li>Bank CIMB Niaga</li>
+          <li>Bank Mandiri</li>
+        </ul>
+      </div>
+    </div>
+    <div class="alert alert-info small">
+      Parser tidak menjalankan OCR. Gunakan PDF e-statement yang memiliki text layer.
+    </div>
+  </div>
+</div>
+{% endblock %}
